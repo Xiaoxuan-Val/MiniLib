@@ -1,32 +1,22 @@
 package com.minilib.springbootlibrary.controller;
 
-import com.minilib.springbootlibrary.repository.BookRepository;
+import com.minilib.springbootlibrary.services.BookServices;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
-import com.minilib.springbootlibrary.entity.Book;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
+@RequestMapping(value = "/api/library")
+@RequiredArgsConstructor
 public class BookController {
     @Autowired
-    private BookRepository bookRepository;
-
-    @PostMapping("/book")
-    public Book saveBook(@RequestBody Book book){
-        return bookRepository.save(book);
+    private final BookServices bookServices;
+    @GetMapping("/book")
+    public ResponseEntity readBooks() {
+        return ResponseEntity.ok(bookServices.readBooks());
     }
 
-    @GetMapping("/book/{id}")
-    public Book getBook(@PathVariable("id") String bookId){
-        return bookRepository.getBookById(bookId);
-    }
-
-    @DeleteMapping("/book/{id}")
-    public String deleteBook(@PathVariable("id") String bookId){
-        return bookRepository.delete(bookId);
-    }
-
-    @PutMapping("/book/{id}")
-    public String updateBook(@PathVariable("id") String bookId, @RequestBody Book book){
-        return bookRepository.update(bookId, book);
-    }
 }

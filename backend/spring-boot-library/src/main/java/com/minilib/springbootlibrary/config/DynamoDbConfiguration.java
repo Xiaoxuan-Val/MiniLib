@@ -1,41 +1,41 @@
 package com.minilib.springbootlibrary.config;
 
-import com.amazonaws.auth.AWSSessionCredentials;
-import com.amazonaws.auth.AWSSessionCredentialsProvider;
+import com.amazonaws.auth.AWSCredentialsProvider;
 import com.amazonaws.auth.AWSStaticCredentialsProvider;
 import com.amazonaws.auth.BasicAWSCredentials;
 import com.amazonaws.client.builder.AwsClientBuilder;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClientBuilder;
-import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapper;
+
+import org.socialsignin.spring.data.dynamodb.repository.config.EnableDynamoDBRepositories;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
+@EnableDynamoDBRepositories
+        (basePackages = "com.minilib.springbootlibrary.repository")
 public class DynamoDbConfiguration {
+    @Value("${amazon.dynamodb.endpoint}")
+    private String amazonDynamoDBEndpoint;
+
+    @Value("${amazon.aws.accesskey}")
+    private String amazonAWSAccessKey;
+
+    @Value("${amazon.aws.secretkey}")
+    private String amazonAWSSecretKey;
+
     @Bean
-    public DynamoDBMapper dynamoDBMapper(){
-        return new DynamoDBMapper(buildAmazonDynamoDB());
+    public AmazonDynamoDB amazonDynamoDB(AWSCredentialsProvider awsCredentialsProvider) {
+        AmazonDynamoDB amazonDynamoDB
+                = AmazonDynamoDBClientBuilder.standard()
+                .withEndpointConfiguration(new AwsClientBuilder.EndpointConfiguration(amazonDynamoDBEndpoint, "us-west-2"))
+                .withCredentials(awsCredentialsProvider).build();
+        return amazonDynamoDB;
     }
 
-    private AmazonDynamoDB buildAmazonDynamoDB() {
-        return AmazonDynamoDBClientBuilder
-                .standard()
-                .withEndpointConfiguration(
-                        new AwsClientBuilder.EndpointConfiguration(
-                              "dynamodb.ap-southeast-2.amazonaws.com",
-                                "ap-southeast-2"
-                        )
-                )
-                .withCredentials(
-                        new AWSStaticCredentialsProvider(
-                                new BasicAWSCredentials(
-                                        "AKIAY2HUBRLAC6V3WYBL",
-                                        ""
-                                )
-                        )
-                )
-                .build();
-
+    @Bean
+    public AWSCredentialsProvider awsCredentialsProvider() {
+        return new AWSStaticCredentialsProvider(new BasicAWSCredentials(amazonAWSAccessKey, amazonAWSSecretKey));
     }
 }
