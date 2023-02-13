@@ -29,7 +29,7 @@ public class DynamoDbConfiguration {
     public AmazonDynamoDB amazonDynamoDB(AWSCredentialsProvider awsCredentialsProvider) {
         AmazonDynamoDB amazonDynamoDB
                 = AmazonDynamoDBClientBuilder.standard()
-                .withEndpointConfiguration(new AwsClientBuilder.EndpointConfiguration(amazonDynamoDBEndpoint, "us-west-2"))
+                .withEndpointConfiguration(new AwsClientBuilder.EndpointConfiguration("dynamodb.ap-southeast-2.amazonaws.com", "ap-southeast-2"))
                 .withCredentials(awsCredentialsProvider).build();
         return amazonDynamoDB;
     }

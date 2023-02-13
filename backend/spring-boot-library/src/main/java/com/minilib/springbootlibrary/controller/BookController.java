@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping(value = "/api/library")
 @RequiredArgsConstructor
 public class BookController {
-    @Autowired
     private final BookServices bookServices;
     @GetMapping("/book")
     public ResponseEntity readBooks() {

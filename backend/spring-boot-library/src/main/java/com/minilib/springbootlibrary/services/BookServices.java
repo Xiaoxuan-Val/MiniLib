@@ -10,7 +10,6 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 
 public class BookServices {
-    @Autowired
     private final BookRepository bookRepository;
 
     public Iterable<Book> readBooks() {
